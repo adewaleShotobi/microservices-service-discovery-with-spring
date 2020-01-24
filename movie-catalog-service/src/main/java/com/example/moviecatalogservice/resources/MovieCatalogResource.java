@@ -26,11 +26,11 @@ public class MovieCatalogResource {
 	public List<CatalogItem> getCatalog(@PathVariable String userId){
 		
 		//get all rated movies id
-		UserRatings userRatings = rs.getForObject("http://localhost:8083/ratingsdata/users/" + userId, UserRatings.class);
+		UserRatings userRatings = rs.getForObject("http://ratings-data-service/ratingsdata/users/" + userId, UserRatings.class);
 		
 		//for each movie ID, call movie info service
 		return userRatings.getRatings().stream().map(rating-> {
-			Movie mov = rs.getForObject("http://localhost:8089/movies/" + rating.getMovieId(), Movie.class);	
+			Movie mov = rs.getForObject("http://movie-info-service/movies/" + rating.getMovieId(), Movie.class);	
 			return new CatalogItem(mov.getName(), "Desc", rating.getRating());
 		})
 		.collect(Collectors.toList());
