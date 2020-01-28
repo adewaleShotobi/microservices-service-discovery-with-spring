@@ -31,7 +31,7 @@ public class MovieCatalogResource {
 		//for each movie ID, call movie info service
 		return userRatings.getRatings().stream().map(rating-> {
 			Movie mov = rs.getForObject("http://movie-info-service/movies/" + rating.getMovieId(), Movie.class);	
-			return new CatalogItem(mov.getName(), "Desc", rating.getRating());
+			return new CatalogItem(mov.getName(), mov.getOverview(), rating.getRating());
 		})
 		.collect(Collectors.toList());
 		

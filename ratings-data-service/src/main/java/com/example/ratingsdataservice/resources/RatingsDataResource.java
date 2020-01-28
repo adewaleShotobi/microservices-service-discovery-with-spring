@@ -24,8 +24,8 @@ public class RatingsDataResource {
 		UserRatings userRatings = new UserRatings();
 		userRatings.setUserId(userId);
 		userRatings.setRatings(Arrays.asList(
-				new Rating("1234",7),
-				new Rating("2304",8)
+				new Rating("200",7),
+				new Rating("240",8)
 		));
 		return userRatings;
 	}
