@@ -1,6 +1,5 @@
 package com.example.moviecatalogservice.resources;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -8,36 +7,32 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.client.RestTemplate;
 
 import com.example.moviecatalogservice.models.CatalogItem;
-import com.example.moviecatalogservice.models.Movie;
-import com.example.moviecatalogservice.models.Rating;
 import com.example.moviecatalogservice.models.UserRatings;
+import com.example.moviecatalogservice.services.MovieInfoService;
+import com.example.moviecatalogservice.services.UserRatingsService;
 
 @RestController
 @RequestMapping("/catalog")
 public class MovieCatalogResource {
 	
 	@Autowired
-	private RestTemplate rs;
+	UserRatingsService userRatingsService;
+	
+	@Autowired
+	MovieInfoService movieInfoService;
 	
 	@RequestMapping("/{userId}")
 	public List<CatalogItem> getCatalog(@PathVariable String userId){
 		
 		//get all rated movies id
-		UserRatings userRatings = rs.getForObject("http://ratings-data-service/ratingsdata/users/" + userId, UserRatings.class);
+		UserRatings userRatings = userRatingsService.getUserRatings(userId);
 		
 		//for each movie ID, call movie info service
-		return userRatings.getRatings().stream().map(rating-> {
-			Movie mov = rs.getForObject("http://movie-info-service/movies/" + rating.getMovieId(), Movie.class);	
-			return new CatalogItem(mov.getName(), mov.getOverview(), rating.getRating());
-		})
+		return userRatings.getRatings().stream().map(rating-> movieInfoService.getMovieInfo(rating))
 		.collect(Collectors.toList());
 		
-//		return Collections.singletonList(
-//				new CatalogItem("SEAL Team","test",4)
-//				);
 	}
 
 }
