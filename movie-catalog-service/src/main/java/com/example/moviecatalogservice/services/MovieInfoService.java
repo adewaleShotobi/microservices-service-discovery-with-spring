@@ -8,13 +8,22 @@ import com.example.moviecatalogservice.models.CatalogItem;
 import com.example.moviecatalogservice.models.Movie;
 import com.example.moviecatalogservice.models.Rating;
 import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
+import com.netflix.hystrix.contrib.javanica.annotation.HystrixProperty;
 
 @Service
 public class MovieInfoService {
 	
 	@Autowired
 	private RestTemplate rs;
-	
+
+//	Hystrix Config properties
+//	@HystrixCommand(fallbackMethod = "getFallbackMovieInfo",
+//			commandProperties = {
+//					@HystrixProperty(name ="execution.isolation.thread.timeoutInMilliseconds",value = "2000"),
+//					@HystrixProperty(name ="circuitBreaker.requestVolumeThreshold",value = "5"),
+//					@HystrixProperty(name ="circuitBreaker.errorThresholdPercentage",value = "50"),
+//					@HystrixProperty(name ="circuitBreaker.sleepWindowInMilliseconds",value = "5000")
+//			})
 
 	@HystrixCommand(fallbackMethod = "getFallbackMovieInfo")
 	public CatalogItem getMovieInfo(Rating rating) {
